@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/vnsonvo/ecom-rest-api/services/auth"
 	"github.com/vnsonvo/ecom-rest-api/types"
 	"github.com/vnsonvo/ecom-rest-api/utils"
 )
@@ -41,11 +42,17 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// if it doenst => create new user
+	hashPassword, err := auth.HashPassword(payload.Password)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
 	err = h.store.CreateUser(types.User{
 		FirstName: payload.FirstName,
 		LastName:  payload.LastName,
 		Email:     payload.Email,
-		// Password:  payload.Password,
+		Password:  hashPassword,
 	})
 
 	if err != nil {
