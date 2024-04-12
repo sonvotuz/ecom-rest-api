@@ -1,5 +1,5 @@
 build:
-	@go build -o out
+	@go build -o out cmd/main.go
 
 test:
 	@go test -v ./...
