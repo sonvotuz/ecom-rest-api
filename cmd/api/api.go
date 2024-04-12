@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/vnsonvo/ecom-rest-api/services/products"
 	"github.com/vnsonvo/ecom-rest-api/services/user"
 )
 
@@ -28,6 +29,10 @@ func (s *APIServer) Run() error {
 
 	userHandler := user.NewHandler(userStore)
 	userHandler.RegisterRoutes(mux, prefixPath)
+
+	productStore := products.NewStore(s.db)
+	productHandler := products.NewHandler(productStore)
+	productHandler.RegisterRoutes(mux, prefixPath)
 
 	var server = &http.Server{
 		Addr:    ":" + s.addr,
