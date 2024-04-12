@@ -79,3 +79,11 @@ type OrderItem struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type CartItem struct {
+	ProductID int `json:"product_id"`
+	Quantity  int `json:"quantity"`
+}
+
+type CartCheckoutPayload struct {
+	Items []CartItem `json:"items" validate:"required"`
+}
