@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS products(
+   id SERIAL PRIMARY KEY,
+   name VARCHAR (255) NOT NULL,
+   description TEXT NOT NULL,
+   image TEXT NOT NULL,
+   price REAL NOT NULL,
+   quantity SERIAL NOT NULL,
+   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
