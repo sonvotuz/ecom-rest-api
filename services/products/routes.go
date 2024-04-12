@@ -5,21 +5,23 @@ import (
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/vnsonvo/ecom-rest-api/services/auth"
 	"github.com/vnsonvo/ecom-rest-api/types"
 	"github.com/vnsonvo/ecom-rest-api/utils"
 )
 
 type Handler struct {
-	store types.ProductStore
+	store     types.ProductStore
+	userStore types.UserStore
 }
 
-func NewHandler(store types.ProductStore) *Handler {
-	return &Handler{store: store}
+func NewHandler(store types.ProductStore, userStore types.UserStore) *Handler {
+	return &Handler{store: store, userStore: userStore}
 }
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux, prefixPath string) {
 	mux.HandleFunc(fmt.Sprintf("GET %s/products", prefixPath), h.handleGetProducts)
-	mux.HandleFunc(fmt.Sprintf("POST %s/products", prefixPath), h.handlerCreateProduct)
+	mux.HandleFunc(fmt.Sprintf("POST %s/products", prefixPath), auth.JWTAuthMiddleware(h.handlerCreateProduct, h.userStore))
 }
 
 func (h *Handler) handleGetProducts(w http.ResponseWriter, r *http.Request) {

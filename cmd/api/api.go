@@ -33,7 +33,7 @@ func (s *APIServer) Run() error {
 	userHandler.RegisterRoutes(mux, prefixPath)
 
 	productStore := products.NewStore(s.db)
-	productHandler := products.NewHandler(productStore)
+	productHandler := products.NewHandler(productStore, userStore)
 	productHandler.RegisterRoutes(mux, prefixPath)
 
 	orderStore := order.NewStore(s.db)
