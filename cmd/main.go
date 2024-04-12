@@ -31,7 +31,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 
-	server := api.NewAPIServer(port, nil)
+	server := api.NewAPIServer(port, db)
 
 	if err := server.Run(); err != nil {
 		log.Fatal(err)
