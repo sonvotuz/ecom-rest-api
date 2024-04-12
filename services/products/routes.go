@@ -3,6 +3,7 @@ package products
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/vnsonvo/ecom-rest-api/services/auth"
@@ -22,6 +23,8 @@ func NewHandler(store types.ProductStore, userStore types.UserStore) *Handler {
 func (h *Handler) RegisterRoutes(mux *http.ServeMux, prefixPath string) {
 	mux.HandleFunc(fmt.Sprintf("GET %s/products", prefixPath), h.handleGetProducts)
 	mux.HandleFunc(fmt.Sprintf("POST %s/products", prefixPath), auth.JWTAuthMiddleware(h.handlerCreateProduct, h.userStore))
+	mux.HandleFunc(fmt.Sprintf("GET %s/products/{productId}", prefixPath), h.handleGetProduct)
+
 }
 
 func (h *Handler) handleGetProducts(w http.ResponseWriter, r *http.Request) {
@@ -53,4 +56,26 @@ func (h *Handler) handlerCreateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.WriteJSON(w, http.StatusCreated, product)
+}
+
+func (h *Handler) handleGetProduct(w http.ResponseWriter, r *http.Request) {
+	productIdStr := r.PathValue("productId")
+	if productIdStr == "" {
+		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("Missing product ID"))
+		return
+	}
+
+	productId, err := strconv.Atoi(productIdStr)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("Invalid product ID"))
+		return
+	}
+
+	product, err := h.store.GetProductByID(productId)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusOK, product)
 }
