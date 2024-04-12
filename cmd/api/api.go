@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+
+	"github.com/vnsonvo/ecom-rest-api/service/user"
 )
 
 type APIServer struct {
@@ -18,8 +20,13 @@ func NewAPIServer(addr string, db *sql.DB) *APIServer {
 	}
 }
 
+const prefixPath = "/api/v1"
+
 func (s *APIServer) Run() error {
 	mux := http.NewServeMux()
+
+	userHandler := user.NewHandler()
+	userHandler.RegisterRoutes(mux, prefixPath)
 
 	var server = &http.Server{
 		Addr:    ":" + s.addr,
