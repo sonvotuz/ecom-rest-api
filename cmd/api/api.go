@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/vnsonvo/ecom-rest-api/service/user"
+	"github.com/vnsonvo/ecom-rest-api/services/user"
 )
 
 type APIServer struct {
@@ -24,8 +24,9 @@ const prefixPath = "/api/v1"
 
 func (s *APIServer) Run() error {
 	mux := http.NewServeMux()
+	userStore := user.NewStore(s.db)
 
-	userHandler := user.NewHandler()
+	userHandler := user.NewHandler(userStore)
 	userHandler.RegisterRoutes(mux, prefixPath)
 
 	var server = &http.Server{
