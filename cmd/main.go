@@ -27,6 +27,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Println("Successfully connected DB!")
+
 	port := os.Getenv("PORT")
 
 	server := api.NewAPIServer(port, nil)
