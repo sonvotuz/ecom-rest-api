@@ -38,7 +38,7 @@ func (s *Store) GetUserByEmail(email string) (*types.User, error) {
 
 func scanRowIntoUser(rows *sql.Rows) (*types.User, error) {
 	user := types.User{}
-	err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.CreatedAt)
+	err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Password, &user.Email, &user.CreatedAt)
 	if err != nil {
 		return nil, err
 	}

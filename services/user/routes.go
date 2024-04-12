@@ -3,6 +3,7 @@ package user
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/vnsonvo/ecom-rest-api/services/auth"
@@ -39,7 +40,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if user exists
-	_, err := h.store.GetUserByEmail(payload.Email)
+	user, err := h.store.GetUserByEmail(payload.Email)
 	if err != nil {
 		// not found
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("Invalid email or password"))
@@ -47,12 +48,20 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// compare passwords
-	if !auth.ComparePasswords(payload.Password, payload.Password) {
+	if !auth.ComparePasswords(user.Password, payload.Password) {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("Invalid email or password"))
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": ""})
+	secret := []byte(os.Getenv("JWTSECRET"))
+
+	token, err := auth.CreateJWT(secret, user.ID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token})
 }
 
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
