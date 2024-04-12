@@ -10,6 +10,9 @@ import (
 
 func CreateJWT(secret []byte, userId int) (string, error) {
 	expireTimeStr := os.Getenv("JWTEXPIREINSECONDS")
+	if expireTimeStr == "" {
+		expireTimeStr = "0"
+	}
 	expireTime, err := strconv.Atoi(expireTimeStr)
 	if err != nil {
 		return "", err
