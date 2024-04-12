@@ -36,6 +36,7 @@ type ProductStore interface {
 	CreateProduct(CreateProductPayload) error
 	GetProductsById([]int) ([]Product, error)
 	UpdateProduct(Product) error
+	GetProductByID(int) (*Product, error)
 }
 
 type Product struct {

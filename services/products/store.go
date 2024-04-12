@@ -89,6 +89,23 @@ func (s *Store) GetProductsById(productIds []int) ([]types.Product, error) {
 	return products, nil
 }
 
+func (s *Store) GetProductByID(productId int) (*types.Product, error) {
+	rows, err := s.db.Query("SELECT * FROM products WHERE id = $1", productId)
+	if err != nil {
+		return nil, err
+	}
+
+	p := types.Product{}
+	for rows.Next() {
+		p, err = scanRowIntoProduct(rows)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &p, nil
+}
+
 func (s *Store) UpdateProduct(product types.Product) error {
 	_, err := s.db.Exec("UPDATE products SET name = $1, description = $2, image = $3, price = $4, quantity = $5 WHERE id = $6",
 		product.Name, product.Description, product.Image, product.Price, product.Quantity, product.ID)
