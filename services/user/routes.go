@@ -9,6 +9,7 @@ import (
 )
 
 type Handler struct {
+	store *types.UserStore
 }
 
 func NewHandler() *Handler {
@@ -32,4 +33,7 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusBadRequest, err)
 	}
 
+	// check if user exists
+
+	// if it doenst => create new user
 }
