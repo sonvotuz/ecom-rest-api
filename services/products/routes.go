@@ -19,6 +19,7 @@ func NewHandler(store types.ProductStore) *Handler {
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux, prefixPath string) {
 	mux.HandleFunc(fmt.Sprintf("GET %s/products", prefixPath), h.handleGetProducts)
+	mux.HandleFunc(fmt.Sprintf("POST %s/products", prefixPath), h.handlerCreateProduct)
 }
 
 func (h *Handler) handleGetProducts(w http.ResponseWriter, r *http.Request) {
