@@ -14,8 +14,7 @@ services:
       - JWTSECRET=${JWTSECRET}
       - DBCONFIG=${DBCONFIG}
     depends_on:
-      postgresdb:
-        condition: service_healthy
+      - migrator
     networks:
       - ecom
 
@@ -32,6 +31,17 @@ services:
       - DBCONFIG=${DBCONFIG}
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - ecom
+
+  migrator:
+    image: migrate/migrate:v4.17.0
+    volumes:
+      - ./cmd/migrate/migrations:/migrations
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    command: ["-path", "/migrations", "-database", "${DBCONFIG}", "up"]
     networks:
       - ecom
 
