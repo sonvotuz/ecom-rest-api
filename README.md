@@ -53,3 +53,17 @@ Run the command
 ```bash
 make test
 ```
+
+## Alternatively, use Docker Compose to build and run the application along with PostgreSQL:
+
+```bash
+docker-compose up --build
+```
+
+### Improvement
+- Introduce a feature to manage user addresses. This will enable the storage of addresses for each user, which can then be dynamically used during the checkout process.
+- Develop functionality to record and retrieve the history of orders placed by each user. This will allow orders to be stored and displayed within the user's profile area.
+- Create an endpoint to cancel orders. This will provide users with the option to cancel their orders.
+
+### Contributing
+Contributions are welcome! Please feel free to submit a pull request.
