@@ -1,0 +1,44 @@
+version: "3.9"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - .:/go/src/api
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      - JWTEXPIREINSECONDS=${JWTEXPIREINSECONDS}
+      - JWTSECRET=${JWTSECRET}
+      - DBCONFIG=${DBCONFIG}
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    networks:
+      - ecom
+
+  postgresdb:
+    image: postgres:16
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d golangdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "${DBPORT}:${DBPORT}"
+    environment:
+      - DBCONFIG=${DBCONFIG}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - ecom
+
+networks:
+  ecom:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
